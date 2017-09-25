@@ -1,13 +1,11 @@
-    use std::io::BufReader;
-    use std::io::BufRead;
-    use std::fs::File;
+use std::io::BufRead;
+use std::io::Cursor;
 
-    fn main() {   
-        let f = File::open("/home/alarm/git/loc/src/dummy.rs").unwrap();
-        let file = BufReader::new(&f);
-        count_lines(file) 
-    }
+fn main() {
+    let cursor = Cursor::new(b"lorem\nipsum\r\ndolor");
+    count_lines(cursor)
+}
 
-    fn count_lines<R: BufRead>(input: R) {
-        println!("{}", input.lines().count())
-    }
+fn count_lines<R: BufRead>(input: R) {
+    println!("{}", input.lines().count())
+}
