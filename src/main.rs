@@ -1,11 +1,8 @@
-use std::io::BufRead;
 use std::io::Cursor;
 
-fn main() {
-    let cursor = Cursor::new(b"lorem\nipsum\r\ndolor");
-    count_lines(cursor)
-}
+mod loc;
 
-fn count_lines<R: BufRead>(input: R) {
-    println!("{}", input.lines().count())
+fn main() {
+    let cursor = Cursor::new(b"lorem\nipsum\r\ndo\nlor");
+    loc::count_lines_of_code(cursor);
 }
