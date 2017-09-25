@@ -4,7 +4,9 @@ pub fn count_lines_of_code<R: BufRead>(input: R) -> usize {
     input.lines()
         // TODO: error handling
         .map(|result| result.unwrap())
-        .filter(|line| line.trim().len() != 0)
+        .map(|line| line.trim().to_string())
+        .filter(|trimmed_line| trimmed_line.len() != 0)
+        .filter(|trimmed_line| !trimmed_line.starts_with("//"))
         .count()
 }
 
@@ -12,7 +14,7 @@ mod test {
     #[test]
     fn counts_lines() {
         use std::io::Cursor;
-        let cursor = Cursor::new(b"lorem\nipsum\r\ndolor");
+        let cursor = Cursor::new(b"counts\ncounts\r\ncounts");
         let loc = super::count_lines_of_code(cursor);
         assert_eq!(loc, 3);
     }
@@ -20,7 +22,15 @@ mod test {
     #[test]
     fn ignores_empty_lines() {
         use std::io::Cursor;
-        let cursor = Cursor::new(b"lorem\n \r\ndolor");
+        let cursor = Cursor::new(b"counts\n \r\ncounts");
+        let loc = super::count_lines_of_code(cursor);
+        assert_eq!(loc, 2);
+    }
+
+    #[test]
+    fn ignores_single_line_comments() {
+        use std::io::Cursor;
+        let cursor = Cursor::new(b"counts\ncounts//\n//doesnt");
         let loc = super::count_lines_of_code(cursor);
         assert_eq!(loc, 2);
     }
