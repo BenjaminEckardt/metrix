@@ -1,20 +1,23 @@
-extern crate glob;
+extern crate gitignore;
 extern crate prettytable;
 
 mod loc;
 
 use std::fs::File;
 use std::io::BufReader;
-use glob::glob;
 use prettytable::Table;
 use prettytable::row::Row;
 use prettytable::cell::Cell;
 
 fn main() {
+	let pwd = std::env::current_dir().unwrap();
+	let gitignore_path = pwd.join(".gitignore");
+	let file = gitignore::File::new(&gitignore_path).unwrap();
+	
     let mut t = Table::new();
     t.add_row(Row::new(vec![Cell::new("path"), Cell::new("loc")]));
-    let table = glob(&"./**/*.rs").unwrap().into_iter()
-        .map(|path_result| path_result.unwrap())
+    let table = file.included_files().unwrap().into_iter()
+        //.map(|path_result| path_result.unwrap())
         .filter(|path| !path.is_dir())
         .map(|path| {
             let file = File::open(path.clone()).unwrap();
