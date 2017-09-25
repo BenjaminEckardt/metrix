@@ -5,3 +5,4 @@ authors = ["beneck <benjamin.eckardt@gmx.net>"]
 
 [dependencies]
 glob = "0.2"
+prettytable-rs = "0.6"
