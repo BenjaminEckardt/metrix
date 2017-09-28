@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate log;
+extern crate env_logger;
 extern crate gitignore;
 extern crate prettytable;
 
@@ -11,6 +14,9 @@ use prettytable::row::Row;
 use prettytable::cell::Cell;
 
 fn main() {
+    env_logger::init().unwrap();
+    warn!("Starting");
+
     let project_source_paths = determine_realtive_source_paths();
     let path_and_loc = read_files_and_count_loc(project_source_paths);
     let result_table = create_table(path_and_loc);
@@ -54,11 +60,12 @@ fn determine_realtive_source_paths() -> Vec<PathBuf> {
     let pwd = std::env::current_dir().unwrap();
     let gitignore_path = pwd.join(".gitignore");
     let source_files = gitignore::File::new(&gitignore_path).expect("no .gitignore found in current directory");
+
     source_files
         .included_files()
         .unwrap()
         .into_iter()
         .filter(|path| !path.is_dir())
-        .map(|path| PathBuf::from(path.strip_prefix(&pwd).unwrap()))
+        .map(|path| path.strip_prefix(&pwd).unwrap().to_path_buf())
         .collect()
 }
