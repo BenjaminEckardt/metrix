@@ -53,7 +53,7 @@ fn init_table_with_header() -> Table {
 fn determine_realtive_source_paths() -> Vec<PathBuf> {
     let pwd = std::env::current_dir().unwrap();
     let gitignore_path = pwd.join(".gitignore");
-    let source_files = gitignore::File::new(&gitignore_path).unwrap();
+    let source_files = gitignore::File::new(&gitignore_path).expect("no .gitignore found in current directory");
     source_files
         .included_files()
         .unwrap()
