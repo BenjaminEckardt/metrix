@@ -10,6 +10,7 @@ pub fn loc<R: BufRead>(input: R) -> usize {
         .count()
 }
 
+#[cfg(test)]
 mod test {
     #[test]
     fn counts_lines() {
