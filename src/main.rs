@@ -18,7 +18,8 @@ fn main() {
 }
 
 fn read_files_and_count_loc(project_source_paths: Vec<PathBuf>) -> Vec<(PathBuf, usize)> {
-    let mut path_and_loc : Vec<(PathBuf, usize)> = project_source_paths.into_iter()
+    let mut path_and_loc: Vec<(PathBuf, usize)> = project_source_paths
+        .into_iter()
         .map(|path| {
             let file = File::open(path.clone()).unwrap();
             let buf_reader = BufReader::new(file);
@@ -31,13 +32,16 @@ fn read_files_and_count_loc(project_source_paths: Vec<PathBuf>) -> Vec<(PathBuf,
 
 fn create_table(path_and_loc: Vec<(PathBuf, usize)>) -> Table {
     let initial_table = init_table_with_header();
-    path_and_loc.into_iter()
-        .fold(initial_table, |mut result_table, path_and_count| {
+    path_and_loc.into_iter().fold(
+        initial_table,
+        |mut result_table,
+         path_and_count| {
             let path = &path_and_count.0.display().to_string();
             let count = &path_and_count.1.to_string();
             result_table.add_row(Row::new(vec![Cell::new(path), Cell::new(count)]));
             result_table
-        })
+        },
+    )
 }
 
 fn init_table_with_header() -> Table {
@@ -50,7 +54,10 @@ fn determine_realtive_source_paths() -> Vec<PathBuf> {
     let pwd = std::env::current_dir().unwrap();
     let gitignore_path = pwd.join(".gitignore");
     let source_files = gitignore::File::new(&gitignore_path).unwrap();
-    source_files.included_files().unwrap().into_iter()
+    source_files
+        .included_files()
+        .unwrap()
+        .into_iter()
         .filter(|path| !path.is_dir())
         .map(|path| PathBuf::from(path.strip_prefix(&pwd).unwrap()))
         .collect()
