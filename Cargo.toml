@@ -1,0 +1,8 @@
+[package]
+name = "metrix"
+version = "0.1.0"
+authors = ["Benjamin Eckardt <benjamin.eckardt@gmx.net>"]
+
+[dependencies]
+gitignore = "1.0"
+prettytable-rs = "0.6"
