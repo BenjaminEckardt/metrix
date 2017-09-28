@@ -1,4 +1,4 @@
-# metrix
+# metrix [![Build Status][travis-image]][travis-url]
 Small pet project of a code analyzing tool - just to write some rust.
 
 Currently only counting __LOC__.
@@ -33,3 +33,6 @@ $ metrix
 | README.md      | 2   |
 +----------------+-----+
 ```
+
+[travis-image]: https://api.travis-ci.org/BenjaminEckardt/metrix.svg?branch=master
+[travis-url]: https://travis-ci.org/BenjaminEckardt/metrix
