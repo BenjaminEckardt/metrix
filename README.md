@@ -1,17 +1,17 @@
 # metrix
+Small pet project of a code analyzing tool - just to write some rust.
 
-Small pet project for code analyzing tool.
-
-Currently only counting LOC.
+Currently only counting __LOC__.
 
 ## usage
+Use `cargo install` in this project root to install the binary.
 
+Use it in the project you want to analyze
 ```bash
 $ metrix
 ```
 
 ## sample output
-
 ```
 +----------------+-----+
 | Path           | LOC |
