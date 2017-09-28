@@ -1,7 +1,7 @@
 [package]
-name = "loc"
+name = "metrix"
 version = "0.1.0"
-authors = ["beneck <benjamin.eckardt@gmx.net>"]
+authors = ["Benjamin Eckardt <benjamin.eckardt@gmx.net>"]
 
 [dependencies]
 gitignore = "1.0"

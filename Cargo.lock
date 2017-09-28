@@ -1,5 +1,5 @@
 [root]
-name = "loc"
+name = "metrix"
 version = "0.1.0"
 dependencies = [
  "gitignore 1.0.6 (registry+https://github.com/rust-lang/crates.io-index)",
