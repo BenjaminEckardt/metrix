@@ -16,7 +16,6 @@ use prettytable::cell::Cell;
 
 fn main() {
     env_logger::init().expect("logger init failed");
-    warn!("Starting");
 
     let project_source_paths = determine_realtive_source_paths();
     let path_and_loc = read_files_and_count_loc(project_source_paths);
@@ -29,14 +28,22 @@ fn read_files_and_count_loc(project_source_paths: Vec<PathBuf>) -> Vec<(PathBuf,
         .into_iter()
         .filter_map(|path| match File::open(path.clone()) {
             Ok(file) => Some((path, file)),
-            Err(_) => None,
+            Err(_) => {
+                warn!("skipped {}", path.to_string_lossy());
+                None
+            },
         })
         .filter_map(|path_and_file| {
+            let path = path_and_file.0;
+            let file = path_and_file.1;
             let mut file_content = String::new();
-            let mut buf_reader = BufReader::new(path_and_file.1);
+            let mut buf_reader = BufReader::new(file);
             match buf_reader.read_to_string(&mut file_content) {
-            	Ok(_) => Some((path_and_file.0, metrics::loc(file_content))),
-            	Err(_) => None
+            	Ok(_) => Some((path, metrics::loc(file_content))),
+            	Err(_) => {
+            	    warn!("skipped {}", path.to_string_lossy());
+            	    None
+           	    }
             }
         })
         .collect();
