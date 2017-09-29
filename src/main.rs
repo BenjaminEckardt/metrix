@@ -7,7 +7,7 @@ extern crate prettytable;
 mod metrics;
 
 use std::fs::File;
-use std::io::BufReader;
+use std::io::{Read, BufReader};
 use std::path::PathBuf;
 use ignore::Walk;
 use prettytable::Table;
@@ -31,9 +31,13 @@ fn read_files_and_count_loc(project_source_paths: Vec<PathBuf>) -> Vec<(PathBuf,
             Ok(file) => Some((path, file)),
             Err(_) => None,
         })
-        .map(|path_and_file| {
-            let buf_reader = BufReader::new(path_and_file.1);
-            (path_and_file.0, metrics::loc(buf_reader))
+        .filter_map(|path_and_file| {
+            let mut file_content = String::new();
+            let mut buf_reader = BufReader::new(path_and_file.1);
+            match buf_reader.read_to_string(&mut file_content) {
+            	Ok(_) => Some((path_and_file.0, metrics::loc(file_content))),
+            	Err(_) => None
+            }
         })
         .collect();
     path_and_loc.sort_by(|a, b| b.1.cmp(&a.1));

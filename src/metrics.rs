@@ -1,8 +1,6 @@
-use std::io::BufRead;
-
-pub fn loc<R: BufRead>(input: R) -> usize {
+pub fn loc(input: String) -> usize {
     input.lines()
-        .filter_map(|result| result.ok())
+        //.filter_map(|result| result.ok())
         .map(|line| line.trim().to_string())
         .filter(|trimmed_line| trimmed_line.len() != 0)
         .filter(|trimmed_line| !trimmed_line.starts_with("//"))
