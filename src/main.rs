@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate log;
 extern crate env_logger;
-extern crate gitignore;
+extern crate ignore;
 extern crate prettytable;
 
 mod metrics;
@@ -9,12 +9,13 @@ mod metrics;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::PathBuf;
+use ignore::Walk;
 use prettytable::Table;
 use prettytable::row::Row;
 use prettytable::cell::Cell;
 
 fn main() {
-    env_logger::init().unwrap();
+    env_logger::init().expect("logger init failed");
     warn!("Starting");
 
     let project_source_paths = determine_realtive_source_paths();
@@ -26,10 +27,13 @@ fn main() {
 fn read_files_and_count_loc(project_source_paths: Vec<PathBuf>) -> Vec<(PathBuf, usize)> {
     let mut path_and_loc: Vec<(PathBuf, usize)> = project_source_paths
         .into_iter()
-        .map(|path| {
-            let file = File::open(path.clone()).unwrap();
-            let buf_reader = BufReader::new(file);
-            (path, metrics::loc(buf_reader))
+        .filter_map(|path| match File::open(path.clone()) {
+            Ok(file) => Some((path, file)),
+            Err(_) => None,
+        })
+        .map(|path_and_file| {
+            let buf_reader = BufReader::new(path_and_file.1);
+            (path_and_file.0, metrics::loc(buf_reader))
         })
         .collect();
     path_and_loc.sort_by(|a, b| b.1.cmp(&a.1));
@@ -57,15 +61,10 @@ fn init_table_with_header() -> Table {
 }
 
 fn determine_realtive_source_paths() -> Vec<PathBuf> {
-    let pwd = std::env::current_dir().unwrap();
-    let gitignore_path = pwd.join(".gitignore");
-    let source_files = gitignore::File::new(&gitignore_path).expect("no .gitignore found in current directory");
-
-    source_files
-        .included_files()
-        .unwrap()
+    Walk::new("./")
         .into_iter()
+        .filter_map(|entry_result| entry_result.ok())
+        .map(|dir_entry| dir_entry.path().to_path_buf())
         .filter(|path| !path.is_dir())
-        .map(|path| path.strip_prefix(&pwd).unwrap().to_path_buf())
         .collect()
 }

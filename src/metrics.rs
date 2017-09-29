@@ -2,8 +2,7 @@ use std::io::BufRead;
 
 pub fn loc<R: BufRead>(input: R) -> usize {
     input.lines()
-        // TODO: error handling
-        .map(|result| result.unwrap())
+        .filter_map(|result| result.ok())
         .map(|line| line.trim().to_string())
         .filter(|trimmed_line| trimmed_line.len() != 0)
         .filter(|trimmed_line| !trimmed_line.starts_with("//"))
