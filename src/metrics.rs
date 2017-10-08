@@ -11,24 +11,21 @@ pub fn loc(input: String) -> usize {
 mod test {
     #[test]
     fn counts_lines() {
-        use std::io::Cursor;
-        let cursor = Cursor::new(b"counts\ncounts\r\ncounts");
+        let cursor = String::from("counts\ncounts\r\ncounts");
         let loc = super::loc(cursor);
         assert_eq!(loc, 3);
     }
 
     #[test]
     fn ignores_empty_lines() {
-        use std::io::Cursor;
-        let cursor = Cursor::new(b"counts\n \r\ncounts");
+        let cursor = String::from("counts\n \r\ncounts");
         let loc = super::loc(cursor);
         assert_eq!(loc, 2);
     }
 
     #[test]
     fn ignores_single_line_comments() {
-        use std::io::Cursor;
-        let cursor = Cursor::new(b"counts\ncounts//\n//doesnt");
+        let cursor = String::from("counts\ncounts//\n//doesnt");
         let loc = super::loc(cursor);
         assert_eq!(loc, 2);
     }
