@@ -72,10 +72,12 @@ fn init_table_with_header() -> Table {
 }
 
 fn determine_realtive_source_paths() -> Vec<PathBuf> {
-    Walk::new("./")
+    let current_dir = "./";
+    Walk::new(current_dir)
         .into_iter()
         .filter_map(|entry_result| entry_result.ok())
         .map(|dir_entry| dir_entry.path().to_path_buf())
         .filter(|path| !path.is_dir())
+        .map(|path| PathBuf::from(path.strip_prefix(&current_dir).unwrap()))
         .collect()
 }
